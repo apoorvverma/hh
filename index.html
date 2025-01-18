@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hitchiked!</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #ffffff;
+      color: #121212;
+      overflow: hidden;
+    }
+    #main {
+            vertical-align: middle;
+            display: table-cell;
+        }
+        h2 {
+            font-weight: 300;
+            margin-bottom: 25px;
+        }
+    .progress-container {
+      position: relative;
+      font-size: 4rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      overflow: hidden;
+    }
+
+    .progress-text {
+      color: rgba(0, 0, 0, 0.2);
+    }
+
+    .progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #121212;
+      width: 0%;
+      height: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      animation: progressAnimation 5s linear infinite;
+    }
+
+    @keyframes progressAnimation {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+    <div id="main">
+
+    <h1>Hitchiked!</h1>
+    <h2>Born at Boston University, Ready to <b>redefine the world!</b></h2>
+        
+  <div class="progress-container">
+    
+    <span class="progress-text">Coming Soon</span>
+    <span class="progress-fill">Coming Soon</span>
+  </main>
+  </div>
+</body>
+</html>
