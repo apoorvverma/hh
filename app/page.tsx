@@ -9,9 +9,6 @@ import { ArrowRight, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import * as dotenv from 'dotenv';
-
-dotenv.config();
 
 export default function LandingPage() {
   const [email, setEmail] = useState("")
@@ -25,7 +22,7 @@ export default function LandingPage() {
     setLoading(true)
     
     try {
-      const response = await fetch( 'http://localhost:3000/api/waitlist/join', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/waitlist/join`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
