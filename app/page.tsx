@@ -5,17 +5,28 @@ import type React from "react"
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { ArrowRight, CheckCircle } from "lucide-react"
+import { ArrowRight, CheckCircle, Users, Shield, DollarSign, Car, Leaf } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function LandingPage() {
   const [email, setEmail] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   // In a real app, you would send this to your API
+  //   console.log("Email submitted:", email)
+  //   setSubmitted(true)
+  //   setTimeout(() => setSubmitted(false), 3000)
+  //   setEmail("")
+  // }
 
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
@@ -64,6 +75,9 @@ export default function LandingPage() {
             Contact
           </Link>
         </div>
+        {/* <Button variant="outline" className="border-blue-400 text-blue-400 hover:bg-blue-400/10">
+          Join Waitlist
+        </Button> */}
       </nav>
 
       {/* Hero Section */}
@@ -102,7 +116,7 @@ export default function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          We&apos;re rethinking the way you get around.
+          Empty seats. Rising costs. Shared solution!
         </motion.h1>
 
         <motion.p
@@ -111,7 +125,7 @@ export default function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          Get where you need to go, without breaking the bank or compromising your time.
+          Whether you drive or ride, Hitchiked helps you save more, travel smarter and commute with purpose.
         </motion.p>
 
         <motion.div
@@ -132,23 +146,41 @@ export default function LandingPage() {
             <Button
               type="submit"
               className="rounded-l-none bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
+              disabled={loading}
             >
-              {submitted ? (
-                <CheckCircle className="h-5 w-5" />
-              ) : (
-                <>
-                  Join Waitlist <ArrowRight className="ml-2 h-4 w-4" />
-                </>
-              )}
+              {loading ? "Joining..." : submitted ? 
+                    <span className="flex items-center">
+                    <CheckCircle className="mr-2 h-4 w-4" /> Joined
+                    </span> : 
+                    <span className="flex items-center">
+                    Join Waitlist <ArrowRight className="ml-2 h-4 w-4" />
+                    </span>
+                }
             </Button>
           </form>
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-          <p className="text-sm text-gray-400 mt-2">Be the first to know when we launch.</p>
+          <div className="mt-2 space-y-2">
+            <p className="text-sm text-gray-400">We will never spam or share your data with anyone else.</p>
+            <div className="bg-blue-500/20 rounded-md p-2 inline-block">
+              <p className="text-sm font-medium text-blue-300">
+                Be the first one to know of our launch and earn discounts!
+              </p>
+            </div>
+          </div>
         </motion.div>
       </section>
 
       {/* Benefits Section */}
       <section className="container mx-auto px-6 py-20">
+        <motion.h2
+          className="text-3xl md:text-4xl font-bold mb-12 text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          Benefits
+        </motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <motion.div
             className="bg-white/5 backdrop-blur-sm p-8 rounded-xl"
@@ -158,19 +190,12 @@ export default function LandingPage() {
             viewport={{ once: true }}
           >
             <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6">
-              <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <DollarSign className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-bold mb-4">Affordable Alternatives</h3>
+            <h3 className="text-xl font-bold mb-4">Fund your weekends</h3>
             <p className="text-gray-300">
-              Say goodbye to expensive ride-hailing services. Our solution provides cost-effective transportation
-              without sacrificing quality.
+              Save $3,000 annually - Shared fares slash the average ride‑hail bill by up to 40%, so your commute funds
+              your weekend, not the other way around.
             </p>
           </motion.div>
 
@@ -182,18 +207,12 @@ export default function LandingPage() {
             viewport={{ once: true }}
           >
             <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6">
-              <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                />
-              </svg>
+              <Users className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-bold mb-4">Door-to-Door Convenience</h3>
+            <h3 className="text-xl font-bold mb-4">Commute with a Community</h3>
             <p className="text-gray-300">
-              Enjoy the convenience of door-to-door rides without the hassle and unpredictability of public transit.
+              Riding alongside classmates, coworkers, and neighbors transforms each trip from a solo slog into a
+              friendly lift—networking built right into your daily route.
             </p>
           </motion.div>
 
@@ -205,86 +224,279 @@ export default function LandingPage() {
             viewport={{ once: true }}
           >
             <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6">
-              <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <DollarSign className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-bold mb-4">Real-Time Flexibility</h3>
+            <h3 className="text-xl font-bold mb-4">Control Your Spend, Every Trip</h3>
             <p className="text-gray-300">
-              Access real-time, flexible options that adapt to your schedule and commute needs, putting you in control.
+              Enter the price that fits your budget and let drivers accept your rate —so you ride at a cost you&apos;ve
+              chosen, not one that&apos;s imposed.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="bg-white/5 backdrop-blur-sm p-8 rounded-xl"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6">
+              <Shield className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="text-xl font-bold mb-4">Fair Fares, Zero Awkwardness</h3>
+            <p className="text-gray-300">
+              The in‑app negotiate fare system handles the back‑and‑forth silently; you see an instant yes/no, no
+              haggling in person, no second‑guessing.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="bg-white/5 backdrop-blur-sm p-8 rounded-xl"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6">
+              <Car className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="text-xl font-bold mb-4">Turn empty seats into extra income</h3>
+            <p className="text-gray-300">
+              Monetize miles you were already driving, earning $5,000–$7,000 each year to cover car payments, insurance,
+              or that next getaway.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="bg-white/5 backdrop-blur-sm p-8 rounded-xl"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6">
+              <Leaf className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="text-xl font-bold mb-4">Drive for good</h3>
+            <p className="text-gray-300">
+              By filling your car, you help pull single‑occupancy vehicles off congested streets—earning cash while
+              making the city breathe easier.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* How It Works (Intentionally Vague) */}
-      <section className="container mx-auto px-6 py-20 text-center">
+      {/* Choose Your Role Section */}
+      <section className="container mx-auto px-6 py-20">
         <motion.h2
-          className="text-3xl md:text-4xl font-bold mb-16"
+          className="text-3xl md:text-4xl font-bold mb-12 text-center"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          A smarter way to travel
+          Pick what you choose to be
         </motion.h2>
 
-        <div className="relative">
-          {/* Abstract representation of the journey */}
-          <div className="absolute left-0 right-0 top-1/2 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent transform -translate-y-1/2"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center justify-items-center">
+          <motion.div
+            className="flex flex-col items-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className="relative w-full max-w-[300px] h-[600px] mb-4 flex items-center justify-center">
+              <Image
+                src="/images/driver-app.png"
+                alt="Driver App Interface"
+                width={300}
+                height={600}
+                className="rounded-3xl shadow-xl object-contain h-full"
+              />
+            </div>
+            <Button className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 px-8 py-6 text-lg">
+              Driver
+            </Button>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 relative">
-            <motion.div
-              className="flex flex-col items-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <div className="h-16 w-16 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6 z-10">
-                <span className="text-xl font-bold">1</span>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Connect</h3>
+          <motion.div
+            className="flex flex-col items-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <div className="relative w-full max-w-[300px] h-[600px] mb-4 flex items-center justify-center">
+              <Image
+                src="/images/rider-app.png"
+                alt="Rider App Interface"
+                width={300}
+                height={600}
+                className="rounded-3xl shadow-xl object-contain h-full"
+              />
+            </div>
+            <Button className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 px-8 py-6 text-lg">
+              Rider
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Social Proof Section */}
+      <section className="container mx-auto px-6 py-20">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-12">Why the status quo is broken</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
+              <h3 className="text-3xl font-bold text-blue-400 mb-2">8.6%</h3>
               <p className="text-gray-300">
-                Join our community of travelers looking for better transportation options.
+                Only 8.6% of American workers carpool (≈ 14 million people) while nearly 69% still drive alone to work.
               </p>
-            </motion.div>
+              <p className="text-xs text-gray-400 mt-2">Source: Census</p>
+            </div>
 
-            <motion.div
-              className="flex flex-col items-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <div className="h-16 w-16 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6 z-10">
-                <span className="text-xl font-bold">2</span>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Match</h3>
+            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
+              <h3 className="text-3xl font-bold text-blue-400 mb-2">$2,140 – $2,730</h3>
               <p className="text-gray-300">
-                Our innovative system finds the perfect transportation solution for your needs.
+                Households burn $2,140 – $2,730 on gasoline every year, even after the dip in pump prices during 2024.
               </p>
-            </motion.div>
+              <p className="text-xs text-gray-400 mt-2">Source: EIA</p>
+            </div>
 
-            <motion.div
-              className="flex flex-col items-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              viewport={{ once: true }}
-            >
-              <div className="h-16 w-16 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6 z-10">
-                <span className="text-xl font-bold">3</span>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Go</h3>
-              <p className="text-gray-300">Enjoy a seamless, affordable journey to your destination.</p>
-            </motion.div>
+            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
+              <h3 className="text-3xl font-bold text-blue-400 mb-2">$1,280</h3>
+              <p className="text-gray-300">
+                The average ride sharing customer now spends $107 a month—that&apos;s ≈ $1,280 per year on ride‑hailing
+                alone.
+              </p>
+              <p className="text-xs text-gray-400 mt-2">Source: Bloomberg Second Measure</p>
+            </div>
           </div>
+
+          <h3 className="text-2xl font-bold mb-8 text-center">How Hitchiked Solves This</h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
+              <h3 className="text-2xl font-bold text-blue-400 mb-2">
+                6 Million Solo Trips Eliminated Through Carpooling
+              </h3>
+              <p className="text-gray-300">
+                By raising pooled trips from 8.6% to ~18%, Hitchiked reduces congestion and maximizes every seat on the
+                road.
+              </p>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
+              <h3 className="text-2xl font-bold text-blue-400 mb-2">Save annually by cutting ride costs by 40%</h3>
+              <p className="text-gray-300">
+                Switching from ride-hail to shared rides slashes your annual spend from $1,280 to $760, putting $520
+                back in your wallet for what matters.
+              </p>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
+              <h3 className="text-2xl font-bold text-blue-400 mb-2">Lower your household fuel bills by 15%</h3>
+              <p className="text-gray-300">
+                Fewer empty miles and smarter seat utilization reduce household gas expenses by approximately $470 a
+                year.
+              </p>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
+              <h3 className="text-2xl font-bold text-blue-400 mb-2">
+                Reduce Your Carbon Footprint Equivalent to 8 Trees
+              </h3>
+              <p className="text-gray-300">
+                Sharing rides helps you skip 480 solo miles per year, equating to the climate benefit of planting 8
+                mature trees—every single year.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="container mx-auto px-6 py-20">
+        <motion.h2
+          className="text-3xl md:text-4xl font-bold mb-12 text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          What user issues are we solving
+        </motion.h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div
+            className="bg-white/5 backdrop-blur-sm p-6 rounded-xl"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center text-2xl">
+                👩🏽
+              </div>
+            </div>
+            <p className="text-gray-300 mb-4">
+              &quot;I&apos;ve faced no-shows more times than I can count. Even when people confirm a ride on online forums, they
+              back out without notice. It&apos;s frustrating when I plan my commute around shared rides.&quot;
+            </p>
+            <p className="font-semibold">Sarah K.</p>
+            <p className="text-sm text-gray-400">Software Engineer</p>
+          </motion.div>
+
+          <motion.div
+            className="bg-white/5 backdrop-blur-sm p-6 rounded-xl"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center text-2xl">
+                👩🏻
+              </div>
+            </div>
+            <p className="text-gray-300 mb-4">
+              &quot;As a solo female traveler, I always hesitate to accept rides from strangers found through online
+              classifieds. There&apos;s no easy way to know if the person is trustworthy or verified, which makes me anxious
+              about my safety.&quot;
+            </p>
+            <p className="font-semibold">Michaela T.</p>
+            <p className="text-sm text-gray-400">University Student</p>
+          </motion.div>
+
+          <motion.div
+            className="bg-white/5 backdrop-blur-sm p-6 rounded-xl"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center text-2xl">
+                👨🏾
+              </div>
+            </div>
+            <p className="text-gray-300 mb-4">
+              &quot;I&apos;m happy to offer rides and split fuel costs, but I&apos;ve had bad experiences with people who don&apos;t show up
+              or keep changing plans. Without a proper platform to verify and coordinate, it feels too risky and
+              unreliable.&quot;
+            </p>
+            <p className="font-semibold">Rahul M.</p>
+            <p className="text-sm text-gray-400">Marketing Professional</p>
+          </motion.div>
         </div>
       </section>
 
@@ -297,7 +509,9 @@ export default function LandingPage() {
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to transform your commute?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to pocket the savings and shrink your carbon footprint?
+          </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
             Join thousands of early adopters who are already changing the way they travel.
           </p>
@@ -316,22 +530,16 @@ export default function LandingPage() {
               disabled={loading}
             >
               {loading ? "Joining..." : submitted ? 
-                <span className="flex items-center">
-                  <CheckCircle className="mr-2 h-4 w-4" /> Joined
-                </span> : 
-                <span className="flex items-center">
-                  Join Waitlist <ArrowRight className="ml-2 h-4 w-4" />
-                </span>
-              }
-              {/* {submitted ? (
-                <CheckCircle className="h-5 w-5" />
-              ) : (
-                <>
-                  Join Waitlist <ArrowRight className="ml-2 h-4 w-4" />
-                </>
-              )} */}
+                    <span className="flex items-center">
+                    <CheckCircle className="mr-2 h-4 w-4" /> Joined
+                    </span> : 
+                    <span className="flex items-center">
+                    Join Waitlist <ArrowRight className="ml-2 h-4 w-4" />
+                    </span>
+                }
             </Button>
           </form>
+          <p className="text-sm text-gray-400 mt-2">We will never spam or share your data with anyone else.</p>
         </motion.div>
       </section>
 
@@ -341,6 +549,28 @@ export default function LandingPage() {
           <div className="flex items-center space-x-2 mb-4 md:mb-0">
             <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div>
             <span className="font-bold text-xl">Hitchiked</span>
+          </div>
+
+          {/* Partner logos */}
+          <div className="flex items-center space-x-6">
+            <div className="h-10 flex items-center justify-center">
+              <Image
+                src="/images/idgvc-logo.png"
+                alt="IDG Capital"
+                width={140}
+                height={45}
+                className="object-contain"
+              />
+            </div>
+            <div className="h-10 flex items-center justify-center">
+              <Image
+                src="/images/boston-university-logo.png"
+                alt="Boston University"
+                width={120}
+                height={40}
+                className="object-contain"
+              />
+            </div>
           </div>
         </div>
         <div className="mt-8 text-center text-gray-400 text-sm">
