@@ -1,15 +1,74 @@
 "use client"
 // @ts-nocheck
 
-import type React from "react"
+import React from "react"
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { ArrowRight, CheckCircle, Users, Shield, DollarSign, Car, Leaf } from "lucide-react"
+import { ArrowRight, CheckCircle, Users, Shield, DollarSign, Car } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import Image from "next/image"
+
+      {/* Carousel Component */}
+      {/* Place this above the LandingPage export or in the same file for now */}
+      function Carousel() {
+        const images = [
+          '/slides/1.jpg',
+          '/slides/2.jpg',
+          '/slides/3.jpg',
+          '/slides/4.jpg',
+          '/slides/5.jpg'
+        ];
+        const [current, setCurrent] = React.useState(0);
+        const prevSlide = () => setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+        const nextSlide = React.useCallback(() => {
+          setCurrent((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+        }, [images.length]);
+        
+        React.useEffect(() => {
+          const timer = setInterval(() => nextSlide(), 4000);
+          return () => clearInterval(timer);
+        }, [current]);
+        return (
+          <div className="relative w-full flex flex-col items-center">
+            <div className="w-full h-[60vw] md:h-[670px] flex items-center justify-center overflow-hidden rounded-2xl bg-white/10">
+              <button
+                aria-label="Previous slide"
+                onClick={prevSlide}
+                className="absolute left-2 z-10 bg-black/20 hover:bg-black/40 rounded-full p-2 shadow-lg top-1/2 -translate-y-1/2"
+              >
+                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" /></svg>
+              </button>
+              <Image
+                src={images[current]}
+                alt={`App screenshot ${current + 1}`}
+                className="object-contain h-full w-full transition-all duration-700 ease-in-out mx-auto"
+                style={{ maxWidth: '100%' }}
+              />
+              <button
+                aria-label="Next slide"
+                onClick={nextSlide}
+                className="absolute right-2 z-10 bg-black/20 hover:bg-black/40 rounded-full p-2 shadow-lg top-1/2 -translate-y-1/2"
+              >
+                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>
+              </button>
+            </div>
+            <div className="flex justify-center mt-4 space-x-2">
+              {images.map((_, idx) => (
+                <button
+                  key={idx}
+                  aria-label={`Go to slide ${idx + 1}`}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${current === idx ? 'bg-blue-500' : 'bg-gray-400/50'}`}
+                  onClick={() => setCurrent(idx)}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      }
+
 
 export default function LandingPage() {
   const [email, setEmail] = useState("")
@@ -64,8 +123,8 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="container mx-auto px-6 py-6 flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-          <span className="font-bold text-xl">Hitchiked</span>
+          {/* <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div> */}
+          <span className="font-bold text-xl">HitcHiked</span>
         </div>
         <div className="hidden md:flex space-x-6">
           <Link href="/faq" className="hover:text-blue-300 transition-colors">
@@ -125,7 +184,7 @@ export default function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          Whether you drive or ride, Hitchiked helps you save more, travel smarter and commute with purpose.
+          Whether you drive or ride, HitcHiked helps you save more, travel smarter and commute with purpose.
         </motion.p>
 
         <motion.div
@@ -170,6 +229,13 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
+      {/* Image Carousel Section */}
+      <section className="flex justify-center items-center py-12">
+        <div className="p-2 flex flex-col items-center w-full max-w-7xl relative">
+          <Carousel />
+        </div>
+      </section>
+
       {/* Benefits Section */}
       <section className="container mx-auto px-6 py-20">
         <motion.h2
@@ -181,7 +247,7 @@ export default function LandingPage() {
         >
           Benefits
         </motion.h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 m-10">
           <motion.div
             className="bg-white/5 backdrop-blur-sm p-8 rounded-xl"
             initial={{ opacity: 0, y: 20 }}
@@ -209,7 +275,7 @@ export default function LandingPage() {
             <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6">
               <Users className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-bold mb-4">Commute with a Community</h3>
+            <h3 className="text-xl font-bold mb-4">Commute with a community</h3>
             <p className="text-gray-300">
               Riding alongside classmates, coworkers, and neighbors transforms each trip from a solo slog into a
               friendly lift—networking built right into your daily route.
@@ -226,13 +292,18 @@ export default function LandingPage() {
             <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6">
               <DollarSign className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-bold mb-4">Control Your Spend, Every Trip</h3>
+            <h3 className="text-xl font-bold mb-4">Control your spend, every trip</h3>
             <p className="text-gray-300">
               Enter the price that fits your budget and let drivers accept your rate —so you ride at a cost you&apos;ve
               chosen, not one that&apos;s imposed.
             </p>
           </motion.div>
 
+          </div>
+
+        {/* Second row - 2 items centered */}
+      <div className="flex justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl">
           <motion.div
             className="bg-white/5 backdrop-blur-sm p-8 rounded-xl"
             initial={{ opacity: 0, y: 20 }}
@@ -243,7 +314,7 @@ export default function LandingPage() {
             <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-6">
               <Shield className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-bold mb-4">Fair Fares, Zero Awkwardness</h3>
+            <h3 className="text-xl font-bold mb-4">Fair fares, zero awkwardness</h3>
             <p className="text-gray-300">
               The in‑app negotiate fare system handles the back‑and‑forth silently; you see an instant yes/no, no
               haggling in person, no second‑guessing.
@@ -266,7 +337,7 @@ export default function LandingPage() {
               or that next getaway.
             </p>
           </motion.div>
-
+{/* 
           <motion.div
             className="bg-white/5 backdrop-blur-sm p-8 rounded-xl"
             initial={{ opacity: 0, y: 20 }}
@@ -282,11 +353,11 @@ export default function LandingPage() {
               By filling your car, you help pull single‑occupancy vehicles off congested streets—earning cash while
               making the city breathe easier.
             </p>
-          </motion.div>
+          </motion.div> */}
         </div>
+      </div>
       </section>
-
-      {/* Choose Your Role Section */}
+{/* 
       <section className="container mx-auto px-6 py-20">
         <motion.h2
           className="text-3xl md:text-4xl font-bold mb-12 text-center"
@@ -342,7 +413,7 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
-
+ */}
       {/* Social Proof Section */}
       <section className="container mx-auto px-6 py-20">
         <motion.div
@@ -358,9 +429,9 @@ export default function LandingPage() {
             <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
               <h3 className="text-3xl font-bold text-blue-400 mb-2">8.6%</h3>
               <p className="text-gray-300">
-                Only 8.6% of American workers carpool (≈ 14 million people) while nearly 69% still drive alone to work.
+                8.6% of American workers carpool (≈ 14 million people) while nearly 69% still drive alone to work.
               </p>
-              <p className="text-xs text-gray-400 mt-2">Source: Census</p>
+              <p className="text-xs text-gray-400 mt-2">Source: US Census</p>
             </div>
 
             <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
@@ -381,19 +452,9 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <h3 className="text-2xl font-bold mb-8 text-center">How Hitchiked Solves This</h3>
+          <h3 className="text-2xl font-bold mb-8 text-center">How HitcHiked solves this</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
-              <h3 className="text-2xl font-bold text-blue-400 mb-2">
-                6 Million Solo Trips Eliminated Through Carpooling
-              </h3>
-              <p className="text-gray-300">
-                By raising pooled trips from 8.6% to ~18%, Hitchiked reduces congestion and maximizes every seat on the
-                road.
-              </p>
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
               <h3 className="text-2xl font-bold text-blue-400 mb-2">Save annually by cutting ride costs by 40%</h3>
               <p className="text-gray-300">
@@ -449,11 +510,11 @@ export default function LandingPage() {
               </div>
             </div>
             <p className="text-gray-300 mb-4">
-              &quot;I&apos;ve faced no-shows more times than I can count. Even when people confirm a ride on online forums, they
-              back out without notice. It&apos;s frustrating when I plan my commute around shared rides.&quot;
+              &quot;I have always walked from off-campus student housing to my classes which used to get really
+              hard/difficult during harsh weather. We were sometimes picked up and dropped off by our seniors who owned cars.&quot;
             </p>
-            <p className="font-semibold">Sarah K.</p>
-            <p className="text-sm text-gray-400">Software Engineer</p>
+            <p className="font-semibold">Riad F.</p>
+            <p className="text-sm text-gray-400">University of South Florida</p>
           </motion.div>
 
           <motion.div
@@ -469,12 +530,11 @@ export default function LandingPage() {
               </div>
             </div>
             <p className="text-gray-300 mb-4">
-              &quot;As a solo female traveler, I always hesitate to accept rides from strangers found through online
-              classifieds. There&apos;s no easy way to know if the person is trustworthy or verified, which makes me anxious
-              about my safety.&quot;
+              &quot;My dad bought me a used Toyota but it was my responsibilty to take care of the maintenance and the
+              fuel. These expenses hit my wallet hard. But in New York State, there&apos;s no way to avoid them.&quot;
             </p>
             <p className="font-semibold">Michaela T.</p>
-            <p className="text-sm text-gray-400">University Student</p>
+            <p className="text-sm text-gray-400">University Of Buffalo</p>
           </motion.div>
 
           <motion.div
@@ -490,14 +550,54 @@ export default function LandingPage() {
               </div>
             </div>
             <p className="text-gray-300 mb-4">
-              &quot;I&apos;m happy to offer rides and split fuel costs, but I&apos;ve had bad experiences with people who don&apos;t show up
-              or keep changing plans. Without a proper platform to verify and coordinate, it feels too risky and
-              unreliable.&quot;
+              &quot;I work in downtown Boston and initially thought buying a car would be a cost-effective option. But I
+              soon realized that the daily tolls, parking costs, fuel, and occasional parking fines added up quickly. I
+              wish I had considered these expenses more carefully before making the purchase.&quot;
             </p>
-            <p className="font-semibold">Rahul M.</p>
-            <p className="text-sm text-gray-400">Marketing Professional</p>
+            <p className="font-semibold">Sachin C.</p>
+            <p className="text-sm text-gray-400">Employee at Amazon</p>
           </motion.div>
         </div>
+      </section>
+
+      {/* Supported By Section */}
+      <section className="container mx-auto px-6 py-20">
+        <motion.h2
+          className="text-3xl md:text-4xl font-bold mb-12 text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          Supported by
+        </motion.h2>
+
+        <motion.div
+          className="flex items-center justify-center space-x-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <div className="h-24 rounded flex items-center justify-center px-8">
+            <Image
+              src="/images/idgvc-logo.png"
+              alt="IDG Capital"
+              width={200}
+              height={60}
+              className="object-contain"
+            />
+          </div>
+          <div className="h-24 flex items-center justify-center">
+            <Image
+              src="/images/boston-university-logo.png"
+              alt="Boston University"
+              width={200}
+              height={60}
+              className="object-contain"
+            />
+          </div>
+        </motion.div>
       </section>
 
       {/* CTA Section */}
@@ -547,12 +647,12 @@ export default function LandingPage() {
       <footer className="container mx-auto px-6 py-12 border-t border-white/10">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center space-x-2 mb-4 md:mb-0">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-            <span className="font-bold text-xl">Hitchiked</span>
+            {/* <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div> */}
+            <span className="font-bold text-xl">HitcHiked</span>
           </div>
 
           {/* Partner logos */}
-          <div className="flex items-center space-x-6">
+{/*           <div className="flex items-center space-x-6">
             <div className="h-10 flex items-center justify-center">
               <Image
                 src="/images/idgvc-logo.png"
@@ -563,6 +663,9 @@ export default function LandingPage() {
               />
             </div>
             <div className="h-10 flex items-center justify-center">
+
+
+
               <Image
                 src="/images/boston-university-logo.png"
                 alt="Boston University"
@@ -571,10 +674,10 @@ export default function LandingPage() {
                 className="object-contain"
               />
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="mt-8 text-center text-gray-400 text-sm">
-          © {new Date().getFullYear()} Hitchiked. All rights reserved.
+          © {new Date().getFullYear()} HitcHiked. All rights reserved.
         </div>
       </footer>
     </div>
