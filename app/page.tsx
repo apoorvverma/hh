@@ -4,12 +4,13 @@
 import React from "react"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
-import { ArrowRight, CheckCircle, Users, Shield, DollarSign, Car } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { ArrowRight, CheckCircle, Users, Shield, DollarSign, Car, User, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import Image from "next/image"
+import { Label } from "@radix-ui/react-label"
 
       {/* Carousel Component */}
       {/* Place this above the LandingPage export or in the same file for now */}
@@ -30,7 +31,7 @@ import Image from "next/image"
         React.useEffect(() => {
           const timer = setInterval(() => nextSlide(), 4000);
           return () => clearInterval(timer);
-        }, [current]);
+        }, [current, nextSlide]);
         return (
           <div className="relative w-full flex flex-col items-center">
             <div className="w-full h-[60vw] md:h-[670px] flex items-center justify-center overflow-hidden rounded-2xl bg-white/10">
@@ -44,6 +45,8 @@ import Image from "next/image"
               <Image
                 src={images[current]}
                 alt={`App screenshot ${current + 1}`}
+                width={1000}
+                height={600}
                 className="object-contain h-full w-full transition-all duration-700 ease-in-out mx-auto"
                 style={{ maxWidth: '100%' }}
               />
@@ -72,9 +75,15 @@ import Image from "next/image"
 
 export default function LandingPage() {
   const [email, setEmail] = useState("")
-  const [submitted, setSubmitted] = useState(false)
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [city, setCity] = useState("")
+  // const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
+  const [formStep, setFormStep] = useState(0) // 0: email, 1: additional info
+  const [isCompleted, setIsCompleted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
   // const handleSubmit = (e: React.FormEvent) => {
   //   e.preventDefault()
@@ -85,11 +94,17 @@ export default function LandingPage() {
   //   setEmail("")
   // }
 
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Move to the next step
+    setFormStep(1)
+  }
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
-    setLoading(true)
+    // setLoading(true)
+    setIsSubmitting(true)
     
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/waitlist/join`, {
@@ -97,14 +112,25 @@ export default function LandingPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, firstName, lastName, city }),
       })
       
       const data = await response.json()
       
       if (data.success) {
-        setSubmitted(true)
-        setTimeout(() => setSubmitted(false), 3000)
+        setIsSubmitting(false)
+        setIsCompleted(true)
+        // setSubmitted(true)
+
+        setTimeout(() => {
+          setEmail("")
+          setFirstName("")
+          setLastName("")
+          setCity("")
+          setFormStep(0)
+          setIsCompleted(false)
+        }, 3000)
+
         setEmail("")
       } else {
         setError(data.message || "Failed to join waitlist")
@@ -113,7 +139,7 @@ export default function LandingPage() {
       console.error("Error joining waitlist:", err)
       setError("Something went wrong. Please try again.")
     } finally {
-      setLoading(false)
+      setIsSubmitting(false)
     }
   }
   
@@ -193,7 +219,18 @@ export default function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <form onSubmit={handleSubmit} className="flex w-full max-w-md mx-auto">
+          <AnimatePresence mode="wait">
+          {formStep === 0 && !isCompleted && (
+          // <form onSubmit={handleSubmit} className="flex w-full max-w-md mx-auto">
+            <motion.form
+              key="email-form"
+              onSubmit={handleEmailSubmit}
+              className="flex w-full max-w-md mx-auto"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
             <Input
               type="email"
               placeholder="Enter your email"
@@ -205,18 +242,149 @@ export default function LandingPage() {
             <Button
               type="submit"
               className="rounded-l-none bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
-              disabled={loading}
+              // disabled={loading}
             >
-              {loading ? "Joining..." : submitted ? 
+              Join Waitlist <ArrowRight className="ml-2 h-4 w-4" />
+              {/* {loading ? "Joining..." : submitted ? 
                     <span className="flex items-center">
                     <CheckCircle className="mr-2 h-4 w-4" /> Joined
                     </span> : 
                     <span className="flex items-center">
                     Join Waitlist <ArrowRight className="ml-2 h-4 w-4" />
                     </span>
-                }
+                } */}
             </Button>
-          </form>
+          </motion.form>
+          )}
+          
+          {formStep === 1 && !isCompleted && (
+            <motion.form
+              key="details-form"
+              onSubmit={handleSubmit}
+              className="w-full max-w-md mx-auto bg-white/10 backdrop-blur-sm p-6 rounded-xl"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h3 className="text-lg font-medium mb-4">Almost there! Tell us a bit about yourself</h3>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">First Name</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="firstName"
+                      type="text"
+                      placeholder="Your first name"
+                      className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="lastName"
+                      type="text"
+                      placeholder="Your last name"
+                      className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="city">City</Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="city"
+                      type="text"
+                      placeholder="Your city"
+                      className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center">
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Submitting...
+                      </div>
+                    ) : (
+                      <>Complete Registration</>
+                    )}
+                  </Button>
+
+                  <button
+                    type="button"
+                    className="mt-2 text-sm text-gray-300 hover:text-white transition-colors"
+                    onClick={() => setFormStep(0)}
+                  >
+                    Back to email
+                  </button>
+                </div>
+              </div>
+            </motion.form>
+          )}
+
+          {isCompleted && (
+              <motion.div
+                key="success"
+                className="w-full max-w-md mx-auto bg-green-500/20 backdrop-blur-sm p-6 rounded-xl"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="flex flex-col items-center justify-center">
+                  <CheckCircle className="h-12 w-12 text-green-400 mb-4" />
+                  <h3 className="text-xl font-medium mb-2">Thank you for joining!</h3>
+                  <p className="text-center text-gray-300">
+                    We&apos;ve added you to our waitlist. We&apos;ll notify you when we launch!
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           <div className="mt-2 space-y-2">
             <p className="text-sm text-gray-400">We will never spam or share your data with anyone else.</p>
@@ -615,30 +783,165 @@ export default function LandingPage() {
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
             Join thousands of early adopters who are already changing the way they travel.
           </p>
-          <form onSubmit={handleSubmit} className="flex w-full max-w-md mx-auto">
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              className="rounded-r-none bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <Button
-              type="submit"
-              className="rounded-l-none bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
-              disabled={loading}
-            >
-              {loading ? "Joining..." : submitted ? 
-                    <span className="flex items-center">
-                    <CheckCircle className="mr-2 h-4 w-4" /> Joined
-                    </span> : 
-                    <span className="flex items-center">
-                    Join Waitlist <ArrowRight className="ml-2 h-4 w-4" />
-                    </span>
-                }
-            </Button>
-          </form>
+
+        
+          <AnimatePresence mode="wait">
+            {formStep === 0 && !isCompleted && (
+              <motion.form
+                key="email-form-cta"
+                onSubmit={handleEmailSubmit}
+                className="flex w-full max-w-md mx-auto"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="rounded-r-none bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <Button
+                  type="submit"
+                  className="rounded-l-none bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
+                >
+                  Join Waitlist <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </motion.form>
+            )}
+
+            {formStep === 1 && !isCompleted && (
+              <motion.form
+                key="details-form-cta"
+                onSubmit={handleSubmit}
+                className="w-full max-w-md mx-auto bg-white/10 backdrop-blur-sm p-6 rounded-xl"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <h3 className="text-lg font-medium mb-4">Almost there! Tell us a bit about yourself</h3>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName-cta">First Name</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="firstName-cta"
+                        type="text"
+                        placeholder="Your first name"
+                        className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName-cta">Last Name</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="lastName-cta"
+                        type="text"
+                        placeholder="Your last name"
+                        className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="city-cta">City</Label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="city-cta"
+                        type="text"
+                        placeholder="Your city"
+                        className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <div className="flex items-center">
+                          <svg
+                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Submitting...
+                        </div>
+                      ) : (
+                        <>Complete Registration</>
+                      )}
+                    </Button>
+
+                    <button
+                      type="button"
+                      className="mt-2 text-sm text-gray-300 hover:text-white transition-colors"
+                      onClick={() => setFormStep(0)}
+                    >
+                      Back to email
+                    </button>
+                  </div>
+                </div>
+              </motion.form>
+            )}
+
+            {isCompleted && (
+              <motion.div
+                key="success-cta"
+                className="w-full max-w-md mx-auto bg-green-500/20 backdrop-blur-sm p-6 rounded-xl"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="flex flex-col items-center justify-center">
+                  <CheckCircle className="h-12 w-12 text-green-400 mb-4" />
+                  <h3 className="text-xl font-medium mb-2">Thank you for joining!</h3>
+                  <p className="text-center text-gray-300">
+                    We&apos;ve added you to our waitlist. We&apos;ll notify you when we launch!
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          
           <p className="text-sm text-gray-400 mt-2">We will never spam or share your data with anyone else.</p>
         </motion.div>
       </section>
