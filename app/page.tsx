@@ -29,7 +29,7 @@ import { Label } from "@radix-ui/react-label"
         }, [images.length]);
         
         React.useEffect(() => {
-          const timer = setInterval(() => nextSlide(), 4000);
+          const timer = setInterval(() => nextSlide(), 6000);
           return () => clearInterval(timer);
         }, [current, nextSlide]);
         return (
@@ -948,38 +948,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="container mx-auto px-6 py-12 border-t border-white/10">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center space-x-2 mb-4 md:mb-0">
-            {/* <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div> */}
-            <span className="font-bold text-xl">HitcHiked</span>
-          </div>
-
-          {/* Partner logos */}
-{/*           <div className="flex items-center space-x-6">
-            <div className="h-10 flex items-center justify-center">
-              <Image
-                src="/images/idgvc-logo.png"
-                alt="IDG Capital"
-                width={140}
-                height={45}
-                className="object-contain"
-              />
-            </div>
-            <div className="h-10 flex items-center justify-center">
-
-
-
-              <Image
-                src="/images/boston-university-logo.png"
-                alt="Boston University"
-                width={120}
-                height={40}
-                className="object-contain"
-              />
-            </div>
-          </div> */}
-        </div>
-        <div className="mt-8 text-center text-gray-400 text-sm">
+        <div className="text-center text-gray-400 text-sm">
           © {new Date().getFullYear()} HitcHiked. All rights reserved.
         </div>
       </footer>

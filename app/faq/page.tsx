@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { useState } from "react"
+import Image from "next/image"
 
 interface FAQItemProps {
   question: string
@@ -107,8 +108,8 @@ export default function FAQPage() {
       {/* Navigation */}
       <nav className="container mx-auto px-6 py-6 flex justify-between items-center">
         <Link href="/" className="flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-          <span className="font-bold text-xl">Hitchiked</span>
+          {/* <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div> */}
+          <span className="font-bold text-xl">HitcHiked</span>
         </Link>
         <div className="hidden md:flex space-x-6">
           <Link href="/faq" className="text-blue-300 transition-colors">
@@ -176,14 +177,34 @@ export default function FAQPage() {
 
       {/* Footer */}
       <footer className="container mx-auto px-6 py-12 border-t border-white/10">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center space-x-2 mb-4 md:mb-0">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-            <span className="font-bold text-xl">Hitchiked</span>
-          </div>
-        </div>
-        <div className="mt-8 text-center text-gray-400 text-sm">
-          © {new Date().getFullYear()} Hitchiked. All rights reserved.
+        <div className="flex flex-col md:flex-row justify-center items-center">
+                  
+                  <div className="flex items-center space-x-6">
+                    <div className="h-10 flex items-center justify-center">
+                      <Image
+                        src="/images/idgvc-logo.png"
+                        alt="IDG Capital"
+                        width={140}
+                        height={45}
+                        className="object-contain"
+                      />
+                    </div>
+                    <div className="h-10 flex items-center justify-center">
+        
+        
+        
+                      <Image
+                        src="/images/boston-university-logo.png"
+                        alt="Boston University"
+                        width={120}
+                        height={40}
+                        className="object-contain"
+                      />
+                    </div>
+                  </div>
+                </div>
+        <div className="mt-10 text-center text-gray-400 text-sm">
+          © {new Date().getFullYear()} HitcHiked. All rights reserved.
         </div>
       </footer>
     </div>
