@@ -68,9 +68,9 @@ export default function ContactPage() {
       <nav className="container mx-auto px-6 py-6 flex justify-between items-center">
         <Link href="/" className="flex items-center space-x-2">
           {/* <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div> */}
-          <span className="font-bold text-xl">HitcHiked</span>
+          <span className="font-bold text-xl">Hitchiked</span>
         </Link>
-        <div className="hidden md:flex space-x-6">
+        <div className="space-x-6">
           <Link href="/faq" className="hover:text-blue-300 transition-colors">
             FAQ
           </Link>
@@ -258,7 +258,7 @@ export default function ContactPage() {
           </div>
         </div>
         <div className="mt-10 text-center text-gray-400 text-sm">
-          © {new Date().getFullYear()} HitcHiked. All rights reserved.
+          © {new Date().getFullYear()} Hitchiked. All rights reserved.
         </div>
       </footer>
     </div>

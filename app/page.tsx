@@ -23,8 +23,13 @@ import { Label } from "@radix-ui/react-label"
           '/slides/5.jpg'
         ];
         const [current, setCurrent] = React.useState(0);
-        const prevSlide = () => setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+        const [direction, setDirection] = React.useState(1); // 1 for next, -1 for prev
+        const prevSlide = () => {
+          setDirection(-1);
+          setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+        };
         const nextSlide = React.useCallback(() => {
+          setDirection(1);
           setCurrent((prev) => (prev === images.length - 1 ? 0 : prev + 1));
         }, [images.length]);
         
@@ -34,26 +39,48 @@ import { Label } from "@radix-ui/react-label"
         }, [current, nextSlide]);
         return (
           <div className="relative w-full flex flex-col items-center">
-            <div className="w-full h-[60vw] md:h-[670px] flex items-center justify-center overflow-hidden rounded-2xl bg-white/10">
+            <div className="w-full h-[60vw] md:h-[670px] flex items-center justify-center overflow-hidden rounded-2xl">
               <button
                 aria-label="Previous slide"
                 onClick={prevSlide}
-                className="absolute left-2 z-10 bg-black/20 hover:bg-black/40 rounded-full p-2 shadow-lg top-1/2 -translate-y-1/2"
+                className="hidden md:flex lg:absolute left-10 z-10 bg-black/20 hover:bg-black/40 rounded-full p-2 shadow-lg top-1/2 -translate-y-1/2"
               >
                 <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" /></svg>
               </button>
-              <Image
-                src={images[current]}
-                alt={`App screenshot ${current + 1}`}
-                width={1000}
-                height={600}
-                className="object-contain h-full w-full transition-all duration-700 ease-in-out mx-auto"
+              <motion.div
+                key={current}
+                className="object-contain h-full w-full flex items-center justify-center"
                 style={{ maxWidth: '100%' }}
-              />
+                initial={{ x: direction === 1 ? 300 : -300, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: direction === 1 ? -300 : 300, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                onDragEnd={(e, info) => {
+                  if (info.offset.x < -100) {
+                    setDirection(1);
+                    nextSlide();
+                  } else if (info.offset.x > 100) {
+                    setDirection(-1);
+                    prevSlide();
+                  }
+                }}
+              >
+                <Image
+                  src={images[current]}
+                  alt={`App screenshot ${current + 1}`}
+                  width={1000}
+                  height={600}
+                  className="object-contain h-full w-full mx-auto select-none pointer-events-none"
+                  style={{ maxWidth: '100%' }}
+                  draggable={false}
+                />
+              </motion.div>
               <button
                 aria-label="Next slide"
                 onClick={nextSlide}
-                className="absolute right-2 z-10 bg-black/20 hover:bg-black/40 rounded-full p-2 shadow-lg top-1/2 -translate-y-1/2"
+                className="hidden md:flex lg:absolute right-10 z-10 bg-black/20 hover:bg-black/40 rounded-full p-2 shadow-lg top-1/2 -translate-y-1/2"
               >
                 <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>
               </button>
@@ -150,9 +177,9 @@ export default function LandingPage() {
       <nav className="container mx-auto px-6 py-6 flex justify-between items-center">
         <div className="flex items-center space-x-2">
           {/* <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div> */}
-          <span className="font-bold text-xl">HitcHiked</span>
+          <span className="font-bold text-xl">Hitchiked</span>
         </div>
-        <div className="hidden md:flex space-x-6">
+        <div className="space-x-6">
           <Link href="/faq" className="hover:text-blue-300 transition-colors">
             FAQ
           </Link>
@@ -210,7 +237,7 @@ export default function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          Whether you drive or ride, HitcHiked helps you save more, travel smarter and commute with purpose.
+          Whether you drive or ride, Hitchiked helps you save more, travel smarter and commute with purpose.
         </motion.p>
 
         <motion.div
@@ -620,7 +647,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <h3 className="text-2xl font-bold mb-8 text-center">How HitcHiked solves this</h3>
+          <h3 className="text-2xl font-bold mb-8 text-center">How Hitchiked solves this</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl">
@@ -949,7 +976,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="container mx-auto px-6 py-12 border-t border-white/10">
         <div className="text-center text-gray-400 text-sm">
-          © {new Date().getFullYear()} HitcHiked. All rights reserved.
+          © {new Date().getFullYear()} Hitchiked. All rights reserved.
         </div>
       </footer>
     </div>
