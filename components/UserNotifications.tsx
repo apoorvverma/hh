@@ -100,7 +100,7 @@ export default function UserNotifications() {
       setTimeout(() => {
         // If remainingUsers is empty, refill it
         setRemainingUsers(prev => {
-          let pool = prev.length === 0 ? [...userData] : [...prev];
+          const pool = prev.length === 0 ? [...userData] : [...prev];
           // Pick a random index
           const randomIndex = Math.floor(Math.random() * pool.length);
           // Splice out the user

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import UserNotifications from "@/components/UserNotifications";
+import Image from "next/image";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,7 +44,7 @@ export default function RootLayout({
           }}
         />
         <noscript>
-          <img
+          <Image
             height="1"
             width="1"
             style={{ display: 'none' }}
